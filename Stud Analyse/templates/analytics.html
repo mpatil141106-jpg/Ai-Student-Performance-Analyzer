@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+     {% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>Analytics | AI Student Analyzer</title>
+    <link rel="stylesheet" href="{% static 'teacher_dash.css' %}">
+</head>
+<body>
+    <div class="bg-animation"><div class="blob"></div><div class="blob"></div></div>
+
+    <div class="main-container" style="margin-left: 0; max-width: 900px; margin: auto; padding: 40px;">
+        <header style="display: flex; justify-content: space-between; margin-bottom: 30px;">
+            <h1 style="color: #00fff0;">📈 Class Analytics</h1>
+            <a href="teacher_dash.html" style="color:#aaa; text-decoration:none;">← Dashboard</a>
+        </header>
+
+        <div class="column-card">
+            <h4>📊 Total Student Analysis</h4>
+            <div class="stat-row">
+                <span>Academic Growth</span>
+                <div class="progress-bar"><div class="progress" style="width: 75%;"></div></div>
+            </div>
+            <div class="stat-row">
+                <span>Engagement Rate</span>
+                <div class="progress-bar"><div class="progress" style="width: 88%;"></div></div>
+            </div>
+            <div class="analysis-summary">
+                <p>Class performance is <b>Steady</b>. 12% increase in engagement compared to last month.</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

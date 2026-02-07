@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+     {% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>Fill Marks | AI Student Analyzer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'marks.css' %}">
+</head>
+<body>
+
+    <div class="bg-animation">
+        <div class="blob"></div>
+        <div class="blob"></div>
+        <div class="blob"></div>
+    </div>
+
+    <div class="form-container">
+        <h2><strong>📝 FILL STUDENT MARKS</strong></h2>
+        
+        <form id="marksForm" action="{% url 'fill_marks' %}" method="post">
+             {% csrf_token %}
+            <div class="form-group">
+                <label><strong>STUDENT NAME</strong></label>
+                <input type="text" id="studentName" name="student_name" placeholder="Enter full name" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label><strong>ENROLLMENT NO</strong></label>
+                    <input type="text" id="enrollmentNo" name="enrollment_no" placeholder="ENR-001" required>
+                </div>
+                <div class="form-group">
+                    <label><strong>STANDARD (STD)</strong></label>
+                    <select id="std" name="standard" required>
+                        <option value="" disabled selected>Select Std</option>
+                        <option value="10">Grade 10</option>
+                        <option value="11">Grade 11</option>
+                        <option value="12">Grade 12</option>
+                    </select>
+                </div>
+            </div>
+
+            <h3 class="section-title"><strong>SUBJECT MARKS (OUT OF 100)</strong></h3>
+            <div class="subject-grid">
+                <div class="form-group">
+                    <label><strong>MATHS</strong></label>
+                    <input type="number" id="maths"  name="maths" class="mark-input" min="0" max="100" placeholder="0" required>
+                </div>
+                <div class="form-group">
+                    <label><strong>SCIENCE</strong></label>
+                    <input type="number" name="science" id="science" class="mark-input" min="0" max="100" placeholder="0" required>
+                </div>
+                <div class="form-group">
+                    <label><strong>ENGLISH</strong></label>
+                    <input type="number" name="english" id="english" class="mark-input" min="0" max="100" placeholder="0" required>
+                </div>
+            </div>
+
+            <div class="calculation-box">
+                <div class="form-group">
+                    <label><strong>TOTAL MARKS</strong></label>
+                    <input type="text" name=" total_marks" id="totalMarks" class="res-field" value="0 / 300" readonly>
+                </div>
+                <div class="form-group">
+                    <label><strong>FINAL GRADE</strong></label>
+                    <input type="text" name="grade" id="grade" class="res-field grade-display" value="Pending" readonly>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="submit-btn"><strong>💾 SAVE STUDENT MARKS</strong></button>
+                <a href="view_marks.html" class="view-marks-btn">
+                    <span class="btn-icon">👁️</span>
+                    <span class="btn-text"><strong>VIEW ALL RECORDS</strong></span>
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const markInputs = document.querySelectorAll('.mark-input');
+        const totalField = document.getElementById('totalMarks');
+        const gradeField = document.getElementById('grade');
+
+        function updatePerformance() {
+            const m = parseFloat(document.getElementById('maths').value) || 0;
+            const s = parseFloat(document.getElementById('science').value) || 0;
+            const e = parseFloat(document.getElementById('english').value) || 0;
+
+            const total = m + s + e;
+            const percentage = (total / 300) * 100;
+
+            totalField.value = `${total} / 300`;
+
+            let grade = "";
+            if (percentage >= 90) grade = "A+ (EXCELLENT)";
+            else if (percentage >= 80) grade = "A (VERY GOOD)";
+            else if (percentage >= 70) grade = "B (GOOD)";
+            else if (percentage >= 60) grade = "C (AVERAGE)";
+            else if (percentage >= 50) grade = "D (PASS)";
+            else grade = "F (FAIL)";
+
+            gradeField.value = grade;
+            gradeField.style.color = percentage < 50 ? "#ff4d4d" : "#00ff66";
+        }
+
+        markInputs.forEach(input => {
+            input.addEventListener('input', updatePerformance);
+        });
+
+        document.getElementById('marksForm').addEventListener('submit', function(e) {
+            // e.preventDefault();
+
+            const newRecord = {
+                studentName: document.getElementById('studentName').value,
+                enrollmentNo: document.getElementById('enrollmentNo').value,
+                std: document.getElementById('std').value,
+                maths: document.getElementById('maths').value,
+                science: document.getElementById('science').value,
+                english: document.getElementById('english').value,
+                total: totalField.value,
+                grade: gradeField.value,
+                timestamp: new Date().toLocaleString()
+            };
+
+            //   let activities = JSON.parse(localStorage.getItem("activities")) || [];
+            //   activities.unshift(newRecord);
+            //   localStorage.setItem("activities", JSON.stringify(activities));
+
+            //  alert("Record Saved Boldly!");
+            //  window.location.href = "view_marks.html"; 
+         });
+    </script>
+</body>
+</html> 

@@ -1,0 +1,132 @@
+:root {
+    --cyan: #00fff0;
+    --green: #00ff66;
+    --red: #ff4d4d;
+    --dark: #0b0e14;
+    --card-bg: rgba(255, 255, 255, 0.03);
+}
+
+/* General Body */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    height: 100vh;
+    overflow: hidden;
+    background: #0b0e14;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+/* Background animation */
+.bg-animation {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+    filter: blur(80px);
+}
+.blob {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    opacity: 0.5;
+    animation: moveBlob 20s infinite alternate ease-in-out;
+}
+.blob:nth-child(1) { top: -10%; left: -10%; background: #00fff0; }
+.blob:nth-child(2) { bottom: -10%; right: -10%; background: #ff00ff; animation-delay: -5s; }
+.blob:nth-child(3) { top: 40%; left: 40%; background: #00ff00; animation-delay: -10s; }
+
+@keyframes moveBlob {
+    0% { transform: translate(0,0) scale(1); }
+    100% { transform: translate(200px, 150px) scale(1.2); }
+}
+/* Ensure all main text is bold by default */
+body {
+    font-weight: 700;
+}
+
+/* Bold Roll Number */
+.roll-id strong {
+    font-size: 1.2rem;
+    color: #ff00ff; /* Neon Pink to make it pop */
+}
+
+/* Status Badges */
+.badge-fixed strong {
+    letter-spacing: 1px;
+}
+
+/* Attendance Grade Box */
+.grade-val strong {
+    font-size: 1.5rem;
+    display: block;
+}
+
+.grade-label strong {
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+}
+
+/* Search Input Bold */
+#searchInput {
+    font-weight: 800;
+    color: white;
+}
+
+/* Table Headers Bold */
+.attn-table th strong {
+    color: #00fff0;
+    text-transform: uppercase;
+}
+
+/* Prevent changes (View Only) */
+.attn-table tbody tr {
+    pointer-events: none;
+}
+
+.attendance-container { width: 95%; max-width: 1000px; padding: 40px 0; }
+
+/* Header & Summary */
+.table-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+.summary-box { padding: 12px 25px; border-radius: 50px; background: rgba(0, 255, 240, 0.1); border: 1px solid var(--cyan); color: var(--cyan); font-weight: 800; }
+
+/* Center Search Bar */
+.toolbar { display: flex; gap: 15px; margin-bottom: 25px; }
+.search-box { flex: 1; position: relative; display: flex; align-items: center; }
+.search-icon { position: absolute; left: 18px; opacity: 0.5; }
+.search-box input {
+    width: 100%; padding: 15px 15px 15px 50px;
+    background: var(--card-bg); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 15px; color: white; outline: none; transition: 0.3s;
+}
+.search-box input:focus { border-color: var(--cyan); box-shadow: 0 0 20px rgba(0,255,240,0.2); }
+
+select, .export-btn { background: #1a1f26; color: white; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); padding: 0 15px; }
+.export-btn { border-color: var(--cyan); color: var(--cyan); font-weight: bold; cursor: pointer; }
+
+/* Non-Interactive Table */
+.table-wrapper { background: var(--card-bg); border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; backdrop-filter: blur(10px); }
+.attn-table { width: 100%; border-collapse: collapse; }
+.attn-table th { background: rgba(255,255,255,0.05); color: var(--cyan); padding: 20px; text-align: left; font-size: 12px; text-transform: uppercase; cursor: pointer; }
+.attn-table td { padding: 15px 20px; border-bottom: 1px solid rgba(255,255,255,0.02); pointer-events: none; } /* LOCKS THE ROWS */
+
+/* Fixed Status Badges */
+.badge-fixed { padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 900; }
+.status-p .badge-fixed { color: var(--green); border: 1px solid var(--green); background: rgba(0,255,102,0.1); }
+.status-a .badge-fixed { color: var(--red); border: 1px solid var(--red); background: rgba(255,77,77,0.1); }
+.status-a { opacity: 0.6; background: rgba(255, 77, 77, 0.02); }
+
+/* Analysis Grade Boxes */
+.grade-box { display: inline-block; padding: 10px; border-radius: 12px; min-width: 90px; text-align: center; border: 1px solid; }
+.grade-val { font-size: 20px; font-weight: 900; font-family: monospace; }
+.grade-label { font-size: 9px; font-weight: bold; margin-top: 2px; }
+
+.grade-low { color: var(--red); border-color: var(--red); background: rgba(255,77,77,0.15); box-shadow: 0 0 10px rgba(255,77,77,0.2); }
+.grade-high { color: var(--green); border-color: var(--green); background: rgba(0,255,102,0.15); box-shadow: 0 0 10px rgba(0,255,102,0.2); }
+
+.roll-id { font-weight: 900; color: #ff00ff; font-size: 18px; }
+.enr-text { font-size: 11px; color: #666; font-family: monospace; }

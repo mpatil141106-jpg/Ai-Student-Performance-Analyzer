@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+     {% load static %}
+<head>
+<meta charset="UTF-8">
+<title>Subjects | AI Student Analyzer</title>
+<link rel="stylesheet" href="{% static 'stu_sub.css' %}">
+</head>
+<body>
+
+<div class="bg-animation">
+    <div class="blob"></div>
+    <div class="blob"></div>
+    <div class="blob"></div>
+</div>
+
+<div class="main">
+    <h1>📚 Subjects</h1>
+
+
+    <div class="cards">
+        <div class="card strong-subject">
+            <h3>Math</h3>
+            <p>Current Score: 78</p>
+        </div>
+
+        <div class="card weak-subject">
+            <h3>Science</h3>
+            <p>Current Score: 65</p>
+        </div>
+
+        <div class="card strong-subject">
+            <h3>English</h3>
+            <p>Current Score: 80</p>
+        </div>
+    </div>
+
+    <br>
+    <a href="student_dash.html" class="login-btn">⬅ Back to Dashboard</a>
+</div>
+
+</body>
+</html>

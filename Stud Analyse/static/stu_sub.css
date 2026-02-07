@@ -1,0 +1,100 @@
+/* ===== RESET ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* ===== BODY ===== */
+body {
+    min-height: 100vh;
+    background: #0f2027;
+    color: white;
+    overflow-x: hidden;
+}
+
+/* ===== BACKGROUND BLOBS ===== */
+.bg-animation {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.blob {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.6;
+    animation: float 25s infinite alternate;
+}
+
+.blob:nth-child(1) { background: #00fff0; }
+.blob:nth-child(2) { background: #ff00ff; animation-delay: 6s; }
+.blob:nth-child(3) { background: #00ff66; animation-delay: 12s; }
+
+@keyframes float {
+    0% { transform: translate(0,0); }
+    100% { transform: translate(400px, -300px); }
+}
+
+/* ===== MAIN CONTENT ===== */
+.main {
+    padding: 40px;
+}
+
+.main h1 {
+    color: #00fff0;
+    margin-bottom: 30px;
+}
+
+/* ===== CARDS GRID ===== */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px;
+}
+
+/* ===== CARD ===== */
+.card {
+    padding: 25px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 0 20px rgba(0,255,255,0.25);
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-8px) scale(1.05);
+    box-shadow: 0 0 35px #00fff0;
+}
+
+/* ===== SUBJECT STATUS ===== */
+.strong-subject {
+    border-left: 5px solid #00ff66;
+}
+
+.weak-subject {
+    border-left: 5px solid #ff4c4c;
+}
+
+/* ===== BUTTON ===== */
+.login-btn {
+    display: inline-block;
+    padding: 10px 22px;
+    border-radius: 25px;
+    background: linear-gradient(90deg, #00fff0, #00c6ff);
+    color: black;
+    font-weight: bold;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.login-btn:hover {
+    box-shadow: 0 0 20px #00fff0;
+    transform: scale(1.05);
+}

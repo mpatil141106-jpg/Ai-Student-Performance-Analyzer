@@ -1,0 +1,189 @@
+/* General Body */
+body {
+ 
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    height: 100vh;
+    overflow: hidden;
+    background: #0f2027;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+/* Background animation with moving blobs */
+.bg-animation {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+.blob {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.6;
+    animation: moveBlob 25s infinite alternate;
+}
+.blob:nth-child(1) { background: radial-gradient(circle, #00fff0, #00c6ff); }
+.blob:nth-child(2) { animation-delay: 5s; background: radial-gradient(circle, #ff00ff, #ff0077); }
+.blob:nth-child(3) { animation-delay: 10s; background: radial-gradient(circle, #00ff00, #00cc00); }
+
+@keyframes moveBlob {
+    0% { transform: translate(0,0); }
+    50% { transform: translate(400px, 300px); }
+    100% { transform: translate(-300px, -400px); }
+}
+
+/* Login Card */
+.login-container {
+    position: relative;
+    width: 400px;
+    padding: 40px;
+    background: rgba(255,255,255,0.1);
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    box-shadow: 0 0 40px rgba(0,255,255,0.3);
+    text-align: center;
+}
+
+.login-container h1 {
+    color: #00fff0;
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    font-size: 14px;
+    margin-bottom: 30px;
+    opacity: 0.8;
+}
+
+/* Input Fields */
+.input-group {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid #00fff0;
+    color: white;
+    outline: none;
+    font-size: 16px;
+}
+
+.input-group label {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    color: #aaa;
+    transition: 0.3s;
+}
+
+.input-group input:focus + label,
+.input-group input:valid + label {
+    top: -12px;
+    font-size: 12px;
+    color: #00fff0;
+}
+
+/* Password eye toggle */
+.password-group {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #00fff0;
+    font-size: 18px;
+    transition: transform 0.2s, color 0.2s;
+}
+
+.toggle-password:hover {
+    transform: translateY(-50%) scale(1.2);
+    color: #00ffff;
+}
+
+/* Role Cards */
+.select-role-label {
+    display: block;
+    text-align: left;
+    margin-bottom: 10px;
+    color: #00fff0;
+    font-weight: bold;
+}
+
+.role-cards {
+    display: flex;
+    justify-content: space-between;
+    gap: 25px;
+    margin-bottom: 25px;
+}
+
+/* Hide actual radio buttons */
+.role-cards input[type="radio"] {
+    display: none;
+}
+
+/* Style the labels as clickable neon buttons */
+.role-card {
+    flex: 1;
+    padding: 15px;
+    text-align: center;
+    background: rgba(255,255,255,0.05);
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 10px rgba(0,255,255,0.3);
+    font-weight: bold;
+    color: white;
+}
+
+.role-card:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 25px #00fff0;
+}
+
+/* Show selected role with glow */
+.role-cards input[type="radio"]:checked + .role-card {
+    background: #00fff0;
+    color: black;
+    box-shadow: 0 0 30px #00fff0;
+    transform: scale(1.1);
+}
+
+/* Login Button */
+.login-btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 25px;
+    background: linear-gradient(90deg, #00fff0, #00c6ff);
+    color: black;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.login-btn:hover {
+    box-shadow: 0 0 20px #00fff0;
+    transform: scale(1.05);
+}
+
+/* Footer */
+.footer-text {
+    margin-top: 20px;
+    font-size: 12px;
+    opacity: 0.8;
+}

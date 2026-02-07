@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+     {% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>Add New Student | AI Student Analyzer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'teacher_dash.css' %}">
+    <link rel="stylesheet" href="{% static 'new_stu.css' %}">
+</head>
+<body>
+
+    <div class="bg-animation">
+        <div class="blob"></div>
+        <div class="blob"></div>
+    </div>
+
+    <div class="main-container form-page">
+        <header class="view-header">
+            <div>
+                <h1>📝 Add New Student</h1>
+                
+            </div>
+            
+        </header>
+
+        <div class="form-card">
+            <form id="studentForm" method="post">
+               {% csrf_token %}
+                <div class="form-group">
+                    <label>Student Full Name</label>
+                    <input type="text" id="studentName" name="sname" placeholder="e.g. ABC" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Roll Number</label>
+                        <input type="number" id="rollNo" name="rollno" placeholder="e.g. 10" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Enrollment Number</label>
+                        <input type="text" id="enrollmentNo" name="enroll" placeholder="e.g. 23XXXXXXXXX" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Standard</label>
+                        <select id="std" name="std" required>
+                            <option value="">Select Grade</option>
+                            <option value="10">Grade 10</option>
+                            <option value="11">Grade 11</option>
+                            <option value="12">Grade 12</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Section</label>
+                        <input type="text" id="section" name="sec" placeholder="e.g. b" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="save-btn">✨ Register Student</button>
+            </form><br><br>
+            <a href="students.html" class="nav-dash-btn">👨‍🎓 View List</a>
+        </div>
+    </div>
+
+    <script>
+        const studentForm = document.getElementById('studentForm');
+
+         studentForm.addEventListener("submit", function () {
+         alert("Student Registered Successfully!");
+            // Create student object
+            const newStudent = {
+                studentName: document.getElementById('studentName').value,
+                rollNo: document.getElementById('rollNo').value,
+                enrollmentNo: document.getElementById('enrollmentNo').value,
+                std: document.getElementById('std').value,
+                section: document.getElementById('section').value,
+                type: "Registration", // Tag to distinguish from marks entries
+                grade: "N/A" // Default grade for new students
+            };
+
+            // Get existing data
+            let activities = JSON.parse(localStorage.getItem("activities")) || [];
+            
+            // Check if enrollment number already exists
+            const exists = activities.some(s => s.enrollmentNo === newStudent.enrollmentNo);
+            
+            if (exists) {
+                alert("This Enrollment Number is already registered!");
+                return;
+            }
+
+            // Save to LocalStorage
+            activities.push(newStudent);
+            localStorage.setItem("activities", JSON.stringify(activities));
+
+            alert("Student Registered Successfully!");
+            window.location.href = "{% url 'new_stu' %}"; // Redirect to list
+        });
+    </script>
+</body>
+</html>

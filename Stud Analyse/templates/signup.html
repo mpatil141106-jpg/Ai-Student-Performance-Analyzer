@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+     {% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Student Analyzer | Signup</title>
+    <link rel="stylesheet" href="{% static 'signup.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+<div class="bg-animation">
+    <div class="blob"></div>
+    <div class="blob"></div>
+    <div class="blob"></div>
+</div>
+
+<div class="signup-container">
+    <h1>🚀 Create Account</h1>
+    <p class="subtitle">Join the Smart Academic System</p>
+    {% if error %}
+      <div class="alert error-alert">
+         ⚠️ {{ error }}
+      </div>
+    {% endif %}
+
+    {% if success %}
+      <div class="alert success-alert">
+    ✅ {{ success }}
+     </div>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="form-grid">
+            <div class="input-group">
+                <input type="text" name="name" required>
+                <label>Full Name</label>
+            </div>
+
+            <div class="input-group">
+                <input type="email" name="email" required>
+                <label>Email Address</label>
+            </div>
+
+            <div class="input-group">
+                <input type="text" name="enr_no" required>
+                <label>Enrollment No.</label>
+            </div>
+
+            <div class="input-group">
+                <input type="text" name="sstd" required>
+                <label>Standard (Std)</label>
+            </div>
+
+            <div class="input-group">
+                <input type="tel" name="mobile" required>
+                <label>Mobile No.</label>
+            </div>
+
+            <div class="input-group">
+                <input type="tel" name="parent_mobile" required>
+                <label>Parent's Mobile No.</label>
+            </div>
+        </div>
+
+        <div class="input-group full-width">
+            <input type="text" name="address" required>
+            <label>Residential Address</label>
+        </div>
+
+        <div class="form-grid">
+            <div class="input-group password-group">
+                <input type="password" id="password" name="password" required>
+                <label>Password</label>
+                <span class="toggle-password">
+                    <i class="fa-solid fa-eye" id="eye-icon"></i>
+                </span>
+            </div>
+
+            <div class="input-group">
+                <input type="password" name="confirm_password" required>
+                <label>Confirm Password</label>
+            </div>
+        </div>
+
+        <button type="submit" class="login-btn">Register Student</button>
+    </form>
+
+    <p class="footer-text">Already have an account? <a href="{% url 'login' %}" style="color: #00fff0; text-decoration: none; font-weight: bold;">Login</a></p>
+</div>
+
+<script>
+const passwordInput = document.getElementById('password');
+const eyeIcon = document.getElementById('eye-icon');
+
+document.querySelector('.toggle-password').addEventListener('click', () => {
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        eyeIcon.classList.remove('fa-eye');
+        eyeIcon.classList.add('fa-eye-slash');
+    } else {
+        passwordInput.type = 'password';
+        eyeIcon.classList.remove('fa-eye-slash');
+        eyeIcon.classList.add('fa-eye');
+    }
+});
+</script>
+
+</body>
+</html>

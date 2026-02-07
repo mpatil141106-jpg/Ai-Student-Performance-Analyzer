@@ -1,0 +1,285 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    height: 100vh;
+    overflow: hidden;
+    background: #0f2027;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+/* Background animation with moving blobs */
+.bg-animation {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    z-index: -100;
+    overflow: hidden;
+}
+.blob {
+   
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.6;
+    animation: moveBlob 25s infinite alternate;
+}
+.blob:nth-child(1) { background: radial-gradient(circle, #00fff0, #00c6ff); }
+.blob:nth-child(2) { animation-delay: 5s; background: radial-gradient(circle, #ff00ff, #ff0077); }
+.blob:nth-child(3) { animation-delay: 10s; background: radial-gradient(circle, #00ff00, #00cc00); }
+
+@keyframes moveBlob {
+    0% { transform: translate(0,0); }
+    50% { transform: translate(400px, 300px); }
+    100% { transform: translate(-300px, -400px); }
+}
+
+/* Center form */
+.activity-form-wrapper {
+    display: flex;
+    justify-content: center;
+    margin: 40px 0;
+}
+
+/* Card style */
+.activity-form-card {
+    width: 100%;
+    max-width: 420px;
+    padding: 22px;
+    border-radius: 18px;
+    background: #0b0f14;
+    box-shadow: 0 0 25px rgba(0,255,204,0.25);
+    border-left: 4px solid #00ffcc;
+}
+
+/* Title */
+.activity-form-card h3 {
+    color: #00ffcc;
+    margin-bottom: 15px;
+}
+
+/* Inputs */
+.activity-form-card input,
+.activity-form-card textarea {
+    width: 100%;
+    margin-bottom: 12px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: none;
+    outline: none;
+    background: rgba(255,255,255,0.08);
+    color: white;
+}
+/* Select box */
+.activity-form-card select {
+    background: #000;
+    color: #fff;
+    border: 1px solid #00ffcc;
+}
+
+/* Dropdown options */
+.activity-form-card option {
+    background: #000;
+    color: #fff;
+}
+
+
+/* Button */
+.activity-form-card button {
+    width: 100%;
+    padding: 10px;
+    border-radius: 20px;
+    background: linear-gradient(90deg, #00ffcc, #00c6ff);
+    color: black;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+}
+
+.activity-form-card button:hover {
+    box-shadow: 0 0 20px #00ffcc;
+}
+
+/* Hide element */
+.hidden {
+    display: none;
+    
+}
+
+/* Activities Section */
+.activity-section {
+    padding: 18px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 0 20px rgba(0,255,255,0.3);
+    margin-bottom: 20px;
+}
+
+.activity-section h3 {
+    color: #00fff0;
+    margin-bottom: 15px;
+}
+
+.activity-section h4 {
+    margin-top: 20px;
+    color: #00ffcc;
+}
+
+/* Form Layout */
+.form-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.activity-section input,
+.activity-section select,
+.activity-section textarea {
+    flex: 1;
+    padding: 10px;
+    border-radius: 12px;
+    border: none;
+    outline: none;
+    background: rgba(255,255,255,0.12);
+    color: white;
+}
+
+.activity-section textarea {
+    resize: none;
+}
+
+/* Activity Cards */
+.activity-card {
+    margin-top: 12px;
+    padding: 12px;
+    border-radius: 12px;
+    background: rgba(0,255,255,0.08);
+    box-shadow: 0 0 12px rgba(0,255,255,0.2);
+    animation: fadeIn 0.4s ease;
+}
+
+.activity-card span {
+    display: inline-block;
+    margin-right: 10px;
+    font-size: 13px;
+    color: #00ffcc;
+}
+.activity-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+}
+
+/* Activity list card */
+.activity-list-card {
+    width: 100%;
+    max-width: 420px;
+    padding: 18px;
+    border-radius: 18px;
+    background: #0b0f14;
+    box-shadow: 0 0 25px rgba(0,255,204,0.25);
+}
+
+/* Individual activity item */
+.activity-card {
+    background: rgba(0,255,255,0.08);
+    padding: 10px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    color: white;
+}
+
+
+/* Small card */
+.activity-card-box {
+    width: 100%;
+    max-width: 420px;   /* 🔥 KEY PART */
+    padding: 20px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 0 25px rgba(0,255,255,0.35);
+}
+
+/* Inputs spacing */
+.activity-card-box input,
+.activity-card-box select,
+.activity-card-box textarea {
+    width: 100%;
+    margin-bottom: 12px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: none;
+    outline: none;
+    background: rgba(255,255,255,0.12);
+    color: white;
+    font-size: 14px;
+}
+
+/* Button full width */
+.activity-card-box button {
+    width: 100%;
+}
+
+
+/* Activity Form Wrapper */
+.activity-form-wrapper {
+    display: flex;
+    justify-content: center;
+    margin: 30px 0;
+}
+
+/* Glass Card */
+.activity-form-card {
+    width: 100%;
+    max-width: 420px;
+    padding: 22px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, #1f2f36, #203a43);
+    box-shadow: 0 0 30px rgba(0,255,204,0.25);
+    border-left: 4px solid #00ffcc;
+}
+
+/* Title */
+.activity-form-card h3 {
+    margin-bottom: 15px;
+    color: #00ffcc;
+}
+
+/* Inputs */
+.activity-form-card input,
+.activity-form-card select,
+.activity-form-card textarea {
+    width: 100%;
+    margin-bottom: 12px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: none;
+    outline: none;
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    font-size: 14px;
+}
+
+/* Button */
+.activity-form-card button {
+    width: 100%;
+    padding: 10px;
+    border-radius: 20px;
+    background: linear-gradient(90deg, #00ffcc, #00c6ff);
+    color: #000;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.activity-form-card button:hover {
+    box-shadow: 0 0 20px #00ffcc;
+    transform: scale(1.03);
+}

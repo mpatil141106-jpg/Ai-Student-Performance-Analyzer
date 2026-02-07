@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+     {% load static %}
+<head>
+<meta charset="UTF-8">
+<title>Add Activity</title>
+<link rel="stylesheet" href="{% static 'activity.css' %}">
+</head>
+<body>
+
+<div class="activity-wrapper">
+
+    <!-- FORM CARD -->
+    <div class="activity-form-card">
+        <h3>🎯 Student Activity</h3>
+
+        <form id="activityForm" action="{% url 'add_activity'%}" method="post">
+             {% csrf_token %}
+            <input type="text" id="studentName" name="student_name"   placeholder="Student Name" required>
+            <input type="text" id="enrollmentNo"  name="enrollment"  placeholder="Enrollment Number" required>
+            <input type="text" id="schoolName"  name="school_name"  placeholder="School Name" required>
+            <input type="text" id="studentStandard"  name="standard"  placeholder="Standard / Class" required>
+
+            <select id="activityType" name="activity_type" onchange="toggleSports()" required>
+                <option value="">Select Activity Type</option>
+                <option>Sports</option>
+                <option>Drawing</option>
+                <option>Dance</option>
+                <option>Music</option>
+                <option>Drama</option>
+            </select>
+
+            <select id="sportsList" name="sports_name" class="hidden">
+                <option value="">Select Sport</option>
+                <option>Cricket</option>
+                <option>Football</option>
+                <option>Badminton</option>
+                <option>Table-tennis</option>
+                <option>Vollyball</option>
+                <option>Swimming</option>
+                <option>Long Jump</option>
+            </select>
+
+            <input type="text" name="activity_name" id="activityName" placeholder="Activity Name" required>
+            <textarea id="activityDesc" name="description" placeholder="Description"></textarea>
+
+            <button type="submit">Add Activity</button>
+        </form>
+
+        <button onclick="goBack()" style="margin-top:10px; background:#ff00aa; color:rgb(9, 9, 9); border:none; padding:10px 15px; border-radius:50px; cursor:pointer;">
+             Back to Dashboard
+        </button>
+    </div>
+
+</div>
+
+<!-- Animated Background -->
+<div class="bg-animation">
+    <div class="blob"></div>
+    <div class="blob"></div>
+    <div class="blob"></div>
+</div>
+
+<script>
+function toggleSports() {
+    const type = document.getElementById("activityType").value;
+    const sports = document.getElementById("sportsList");
+
+    if (type === "Sports") {
+        sports.classList.remove("hidden");
+        sports.required = true;
+    } else {
+        sports.classList.add("hidden");
+        sports.required = false;
+        sports.value = "";
+    }
+}
+
+// document.getElementById("activityForm").addEventListener("submit", function(e) {
+//     e.preventDefault();
+
+    const studentName = document.getElementById("studentName").value;
+    const enrollmentNo = document.getElementById("enrollmentNo").value;
+    const schoolName = document.getElementById("schoolName").value;
+    const studentStandard = document.getElementById("studentStandard").value;
+    const type = document.getElementById("activityType").value;
+    const sport = document.getElementById("sportsList").value;
+    const name = document.getElementById("activityName").value;
+    const desc = document.getElementById("activityDesc").value;
+
+    let activities = JSON.parse(localStorage.getItem("activities")) || [];
+
+    activities.push({
+        studentName,
+        enrollmentNo,
+        schoolName,
+        standard: studentStandard,
+        type,
+        name: sport ? sport + " - " + name : name,
+        desc
+    });
+
+    localStorage.setItem("activities", JSON.stringify(activities));
+
+    alert("Activity added successfully!");
+    // Optionally, clear form
+    document.getElementById("activityForm").reset();
+    toggleSports(); // hide sports dropdown if needed
+});
+
+function goBack() {
+    window.location.href = "student_dash.html";
+}
+</script>

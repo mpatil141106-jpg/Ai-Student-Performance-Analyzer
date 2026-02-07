@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+     {% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>View Marks | AI Student Analyzer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'view_marks.css'%}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+
+    <div class="bg-animation">
+        <div class="blob"></div>
+        <div class="blob"></div>
+    </div>
+
+    <div class="view-marks-page">
+        <header class="view-header">
+            <div>
+                <h1><strong>📊 Student Marksheet</strong></h1>
+                <p><strong>Official Academic Records</strong></p>
+            </div>
+            <div class="header-btns">
+                <button onclick="window.print()" class="print-btn"><strong>🖨️ Print</strong></button>
+                <a href="marks.html" class="back-btn"><strong>← Add Marks</strong></a>
+            </div>
+        </header>
+
+        <div class="actions-bar no-print">
+            <input type="text" id="searchInput" class="search-box" placeholder="🔍 Search student name or ENR...">
+            <button onclick="downloadPDF()" class="download-btn"><strong>📥 Download PDF</strong></button>
+        </div>
+
+        <div id="pdf-content" class="table-container">
+            <div class="pdf-only-header">
+                <h2><strong>STUDENT PERFORMANCE REPORT</strong></h2>
+                <hr>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th><strong>ENR NO</strong></th>
+                        <th><strong>STUDENT NAME</strong></th>
+                        <th><strong>STD</strong></th>
+                        <th><strong>MATHS</strong></th>
+                        <th><strong>SCI</strong></th>
+                        <th><strong>ENG</strong></th>
+                        <th><strong>TOTAL</strong></th>
+                        <th><strong>GRADE</strong></th>
+                        <th class="no-print"><strong>ACTION</strong></th>
+                    </tr>
+                </thead>
+               <tbody>
+    {% for student in marks %}
+    <tr>
+        <td><strong>{{ student.enrollment_no }}</strong></td>
+        <td class="pdf-name-fix">
+            <strong>{{ student.student_name|upper }}</strong>
+        </td>
+        <td><strong>{{ student.std }}</strong></td>
+        <td>{{ student.maths }}</td>
+        <td>{{ student.science }}</td>
+        <td>{{ student.english }}</td>
+        <td><strong>{{ student.total }}/300</strong></td>
+        <td>
+            <span class="grade-badge {% if 'Fail' in student.grade %}fail-grade{% endif %}">
+                <strong>{{ student.grade }}</strong>
+            </span>
+        </td>
+        <td class="no-print">
+            <a href="{% url 'delete_marks' student.id %}" class="delete-btn">🗑️</a>
+        </td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="9" style="text-align:center; padding:40px;">
+            <strong>No records found.</strong>
+        </td>
+    </tr>
+    {% endfor %}
+</tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // const marksTableBody = document.getElementById('marksTableBody');
+        const searchInput = document.getElementById('searchInput');
+        
+        // Load data - filters for items that have a 'grade' (Marks Entry)
+        let activities = JSON.parse(localStorage.getItem("activities")) || [];
+
+        function renderTable(data) {
+            marksTableBody.innerHTML = "";
+            
+            // Filter to ensure we only show "Marks" type data
+            // (Assumes marks records have 'maths' or 'grade' fields)
+            const marksOnly = data.filter(item => item.grade);
+
+            if (marksOnly.length === 0) {
+                marksTableBody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:50px;"><strong>No records found.</strong></td></tr>`;
+                return;
+            }
+
+            marksOnly.forEach((student) => {
+                const actualIndex = activities.indexOf(student);
+                const isFail = student.grade.includes("(Fail)") || student.grade.includes("F ");
+
+                marksTableBody.innerHTML += `
+                    <tr>
+                        <td><strong>${student.enrollmentNo}</strong></td>
+                        <td class="pdf-name-fix"><strong>${student.studentName.toUpperCase()}</strong></td>
+                        <td><strong>${student.std}</strong></td>
+                        <td>${student.maths}</td>
+                        <td>${student.science}</td>
+                        <td>${student.english}</td>
+                        <td><strong>${student.total}</strong></td>
+                        <td><span class="grade-badge ${isFail ? 'fail-grade' : ''}"><strong>${student.grade}</strong></span></td>
+                        <td class="no-print">
+                            <button class="delete-btn" onclick="deleteRecord(${actualIndex})">🗑️</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function deleteRecord(index) {
+            if(confirm("Permanently delete this mark record?")) {
+                activities.splice(index, 1);
+                localStorage.setItem("activities", JSON.stringify(activities));
+                renderTable(activities);
+            }
+        }
+
+        function downloadPDF() {
+            const element = document.getElementById('pdf-content');
+            const opt = {
+                margin: 10,
+                filename: 'Marks_Report.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 3, backgroundColor: '#0f2027' },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' } // Landscape for more columns
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const filtered = activities.filter(item => 
+                (item.studentName && item.studentName.toLowerCase().includes(term)) || 
+                (item.enrollmentNo && item.enrollmentNo.toLowerCase().includes(term))
+            );
+            renderTable(filtered);
+        });
+
+        renderTable(activities);
+    </script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>Global Student Records | AI Analyzer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="{% static 'teacher_dash.css' %}">
+    <link rel="stylesheet" href="{% static 'students.css' %}">
+</head>
+<body>
+
+<!-- Background -->
+<div class="bg-animation">
+    <div class="blob"></div>
+    <div class="blob"></div>
+</div>
+
+<div class="main-container students-page">
+
+    <!-- Header -->
+    <header class="view-header">
+        <div class="header-left">
+            <h1>👨‍🎓 Global Student Records</h1>
+            <p>Comprehensive data management for all active enrollments</p>
+        </div>
+        <a href="{% url 'teacher_dash' %}" class="nav-dash-btn">📊 Dashboard</a>
+    </header>
+
+    <!-- Search + Filter -->
+    <div class="search-nav-container">
+        <div class="search-wrapper">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="studentSearch" placeholder="Search by name or enrollment number...">
+        </div>
+
+        <div class="filter-wrapper">
+            <select id="stdFilter">
+                <option value="">All Standards</option>
+                <option value="10">Grade 10</option>
+                <option value="11">Grade 11</option>
+                <option value="12">Grade 12</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrapper">
+        <table class="student-table" id="studentTable">
+            <thead>
+                <tr>
+                    <th>Roll No</th>
+                    <th>Enrollment No</th>
+                    <th>Student Name</th>
+                    <th>Standard</th>
+                    <th>Section</th>
+                    <th style="text-align:center;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in students %}
+                <tr>
+                    <td>{{ s.rollno }}</td>
+                    <td class="enroll">{{ s.enroll }}</td>
+                    <td class="name">{{ s.sname }}</td>
+                    <td class="std">{{ s.std }}</td>
+                    <td>{{ s.sec }}</td>
+                    <td class="action-cells">
+                        <a href="{% url 'edit_student' s.id %}" class="edit-btn">✏️</a>
+                        <a href="{% url 'delete_student' s.id %}"
+                           class="delete-btn"
+                           onclick="return confirm('Are you sure?')">🗑️</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" style="text-align:center;">No students found</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<!-- 🔥 SEARCH + FILTER JS (NO localStorage) -->
+<script>
+    const searchInput = document.getElementById("studentSearch");
+    const stdFilter = document.getElementById("stdFilter");
+    const rows = document.querySelectorAll("#studentTable tbody tr");
+
+    function filterTable() {
+        const searchValue = searchInput.value.toLowerCase();
+        const stdValue = stdFilter.value;
+
+        rows.forEach(row => {
+            const name = row.querySelector(".name").innerText.toLowerCase();
+            const enroll = row.querySelector(".enroll").innerText.toLowerCase();
+            const std = row.querySelector(".std").innerText;
+
+            const matchSearch =
+                name.includes(searchValue) || enroll.includes(searchValue);
+
+            const matchStd =
+                stdValue === "" || std === stdValue;
+
+            row.style.display = (matchSearch && matchStd) ? "" : "none";
+        });
+    }
+
+    searchInput.addEventListener("input", filterTable);
+    stdFilter.addEventListener("change", filterTable);
+</script>
+
+</body>
+</html>

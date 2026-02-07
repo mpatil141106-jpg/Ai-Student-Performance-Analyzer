@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Student</title>
+    <link rel="stylesheet" href="{% static 'edit_student.css' %}">
+</head>
+<body>
+
+<div class="page-wrapper">
+
+    <div class="edit-card">
+        <h2>✏️ Edit Student</h2>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <div class="input-group">
+                <label>Name</label>
+                <input type="text" name="name" value="{{ student.studentName }}" required>
+            </div>
+
+            <div class="input-group">
+                <label>Roll No</label>
+                <input type="text" name="roll" value="{{ student.rollNo }}" required>
+            </div>
+
+            <div class="input-group">
+                <label>Enrollment No</label>
+                <input type="text" name="enroll" value="{{ student.enrollmentNo }}" readonly>
+            </div>
+
+            <button type="submit" class="update-btn">Update Student</button>
+        </form>
+    </div>
+
+    <!-- Back Button -->
+    <a href="{% url 'students' %}" class="back-btn">← Back</a>
+
+</div>
+
+</body>
+</html>

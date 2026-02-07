@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Student AI Performance - Dark Theme</title>
+
+<style>
+    body { 
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+        margin: 0; 
+        padding: 40px; 
+        background-color: #0b1619; 
+        color: #e0e0e0; 
+    }
+    .blob {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.6;
+    animation: moveBlob 25s infinite alternate;
+}
+.blob:nth-child(1) { background: radial-gradient(circle, #00fff0, #00c6ff); }
+.blob:nth-child(2) { animation-delay: 5s; background: radial-gradient(circle, #ff00ff, #ff0077); }
+.blob:nth-child(3) { animation-delay: 10s; background: radial-gradient(circle, #00ff00, #00cc00); }
+
+@keyframes moveBlob {
+    0% { transform: translate(0,0); }
+    50% { transform: translate(400px, 300px); }
+    100% { transform: translate(-300px, -400px); }
+}
+    h1 { 
+        font-weight: 300;
+        color: #00ffd5; 
+        margin-bottom: 20px;
+        border-left: 4px solid #00ffd5;
+        padding-left: 15px;
+    }
+    /* Search & Filter Bar */
+    .controls {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+    }
+    /* Make input & select more modern */
+    input[type="text"], select {
+        padding: 10px 14px;
+        border-radius: 12px;
+        border: none;
+        outline: none;
+        font-size: 0.95rem;
+        background-color: rgba(255,255,255,0.05);
+        color: #fff;
+        transition: all 0.3s ease;
+    }
+
+    input[type="text"]:focus, select:focus {
+        background-color: rgba(0,255,213,0.2);
+        box-shadow: 0 0 10px #00ffd5;
+    }
+    /* Neon glowing buttons */
+    button {
+        padding: 10px 16px;
+        background: #00ffd5;
+        color: #000;
+        font-weight: bold;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        box-shadow: 0 0 10px #00ffd5, 0 0 20px #00ffd5, 0 0 30px #00ffd5;
+        transition: all 0.3s ease;
+    }
+
+    button:hover {
+        background: #00bfa5;
+        box-shadow: 0 0 20px #00bfa5, 0 0 30px #00bfa5, 0 0 40px #00bfa5;
+        transform: scale(1.05);
+    }
+
+    /* Table styling - Dark Neon Theme */
+table { 
+    width: 100%; 
+    border-collapse: separate; 
+    border-spacing: 0 12px; 
+    margin-top: 20px; 
+    font-family: 'Segoe UI', sans-serif;
+    color: #e0e0e0;
+}
+
+th { 
+    padding: 15px; 
+    text-align: center; 
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: linear-gradient(135deg, #00ffd5, #00c6ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+td { 
+    padding: 18px; 
+    text-align: center; 
+    background-color: #162427; 
+    border: none;
+    font-size: 0.95rem;
+    border-radius: 8px;
+    transition: transform 0.2s, background 0.3s, box-shadow 0.3s;
+}
+
+tbody tr:hover td { 
+    background-color: #1f3337; 
+    transform: scale(1.02);
+    box-shadow: 0 0 15px rgba(0,255,213,0.4);
+}
+
+/* Performance Level Glow */
+tr.High td { border-left: 4px solid #00ffd5; box-shadow: 0 0 8px #00ffd5; }
+tr.Medium td { border-left: 4px solid #f1c40f; box-shadow: 0 0 8px #f1c40f; }
+tr.Low td { border-left: 4px solid #ff4d4d; box-shadow: 0 0 8px #ff4d4d; }
+
+tr.High td:last-child { color: #00ffd5; font-weight: bold; }
+tr.Medium td:last-child { color: #f1c40f; font-weight: bold; }
+tr.Low td:last-child { color: #ff4d4d; font-weight: bold; }
+
+.no-data-cell { 
+    color: #666; 
+    font-style: italic; 
+    background: rgba(255, 255, 255, 0.05); 
+    border-radius: 8px;
+}
+
+    .alert { 
+        background-color: #ff4d4d; 
+        color: white; 
+        padding: 10px 15px; 
+        border-radius: 6px; 
+        margin-bottom: 15px; 
+        font-weight: bold;
+    }
+    /* Dropdown with glow */
+    select {
+        background-color: rgba(255,255,255,0.05);
+        color: #fff;
+        box-shadow: 0 0 10px rgba(32, 34, 34, 0.3);
+    }
+
+    select:hover {
+        box-shadow: 0 0 15px #00ffd5;
+        color: #000;
+    }
+</style>
+
+</head>
+
+<body>
+
+<h1>AI-Based Student Performance</h1>
+
+<div class="alert" id="highAlert" style="display:none;">
+    ⚠️ At-Risk Students Detected! Take Immediate Action!
+</div>
+<div class="bg-animation">
+    <div class="blob"></div>
+    <div class="blob"></div>
+    <div class="blob"></div>
+</div>
+
+<div class="controls">
+     
+    <input type="text" id="searchInput" placeholder="Search by student name...">
+    <select id="filterSelect">
+        <option value="all">Show All</option>
+        <option value="High">High Performers</option>
+        <option value="Medium">Medium Performers</option>
+        <option value="Low">At-Risk / Low</option>
+    </select>
+    <button id="downloadBtn">Download Report</button>
+
+</div>
+
+<table id="studentTable">
+    <thead>
+        <tr>
+            <th>Enrollment No</th>
+            <th>Name</th>
+            <th>Marks %</th>
+            <th>Attendance %</th>
+            <th>Activity %</th>
+            <th>Overall Score</th>
+            <th>Performance Level</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for student in performance_data %}
+        <tr class="{{ student.performance_level }}">
+            <td>{{ student.enrollment_no }}</td>
+            <td>{{ student.student_name }}</td>
+            <td>{{ student.marks_percent }}%</td>
+            <td>{{ student.attendance_percent }}%</td>
+            <td>{{ student.activity_percent }}%</td>
+            <td>{{ student.overall_score }}</td>
+            <td>{{ student.performance_level }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="7" class="no-data-cell">No student data available for analysis.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script>
+// Filter & Search
+const searchInput = document.getElementById('searchInput');
+const filterSelect = document.getElementById('filterSelect');
+const table = document.getElementById('studentTable').getElementsByTagName('tbody')[0];
+const highAlert = document.getElementById('highAlert');
+
+function filterTable() {
+    let searchValue = searchInput.value.toLowerCase();
+    let filterValue = filterSelect.value;
+    let rows = table.getElementsByTagName('tr');
+    let atRiskFound = false;
+
+    for (let i = 0; i < rows.length; i++) {
+        let cells = rows[i].getElementsByTagName('td');
+        if(cells.length === 0) continue; // skip empty rows
+
+        let name = cells[1].textContent.toLowerCase();
+        let level = cells[6].textContent;
+
+        let matchSearch = name.includes(searchValue);
+        let matchFilter = filterValue === 'all' || filterValue === level;
+
+        rows[i].style.display = (matchSearch && matchFilter) ? '' : 'none';
+
+        if(level === 'Low' && matchSearch && matchFilter) {
+            atRiskFound = true;
+        }
+    }
+
+    highAlert.style.display = atRiskFound ? 'block' : 'none';
+}
+
+searchInput.addEventListener('keyup', filterTable);
+filterSelect.addEventListener('change', filterTable);
+
+// Download CSV
+document.getElementById('downloadBtn').addEventListener('click', function() {
+    let csv = 'Enrollment No,Name,Marks %,Attendance %,Activity %,Overall Score,Performance Level\n';
+    let rows = table.querySelectorAll('tr');
+    rows.forEach(row => {
+        let cells = row.querySelectorAll('td');
+        if(cells.length === 0) return;
+        let rowData = [];
+        cells.forEach(cell => rowData.push(cell.textContent.replace('%','')));
+        csv += rowData.join(',') + '\n';
+    });
+
+    let blob = new Blob([csv], {type: 'text/csv'});
+    let url = URL.createObjectURL(blob);
+    let a = document.createElement('a');
+    a.href = url;
+    a.download = 'student_performance_report.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+});
+</script>
+
+</body>
+</html>

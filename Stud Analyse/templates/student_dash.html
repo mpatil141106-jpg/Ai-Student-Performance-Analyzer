@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+     {% load static %}
+<head>
+<meta charset="UTF-8">
+<title>AI Student Dashboard</title>
+<link rel="stylesheet" href="{% static 'student_dash.css'%}">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<!-- Neon Background -->
+<div class="bg-animation">
+    <div class="blob"></div>
+    <div class="blob"></div>
+    <div class="blob"></div>
+</div>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+    <div class="profile-section">
+        <div class="profile-pic">
+            <img src="/static/images/default-profile.png" id="profileImage" alt="Profile Pic">
+            <label for="uploadProfile" class="upload-btn">+</label>
+            <input type="file" id="uploadProfile" accept="image/*" style="display:none;">
+        </div>
+        <p>John Doe</p>
+    </div>
+    <ul class="sidebar-menu">
+        
+      <li onclick="window.location.href='{% url 'stu_sub' %}'"> Subjects</li>
+        <li onclick="window.location.href='{% url 'activity'%}'">Activity</li>
+        <li class="logout-item">
+    <button class="logout-btn" onclick="openLogoutModal()">Logout</button>
+</li>
+        
+    </ul>
+</div>
+
+<!-- Main Dashboard -->
+<div class="main" id="main">
+    <div class="topbar">
+        <span class="hamburger" id="hamburger">&#9776;</span>
+        <h1>Welcome, John Doe 👩‍🎓</h1>
+    </div>
+     
+
+    <div class="overall-stats">
+    <div class="card attendance-card glow-on-hover">
+        <h3>Total Attendance</h3>
+        <div class="attendance-circle pulse">
+            <span class="attendance-value">90%</span>
+        </div>
+        <p>Overall Status: <span class="neon-text">Excellent</span></p>
+    </div>
+
+    <!-- Subject Cards -->
+   <div class="card strong-subject">
+    <h3>Math</h3>
+    <p>Marks: {{ marks.maths }}</p>
+    <p>Predicted: {{ marks.predicted_maths }}</p>
+</div>
+
+<div class="card weak-subject">
+    <h3>Science</h3>
+    <p>Marks: {{ marks.science }}</p>
+    <p>Predicted: {{ marks.predicted_science }}</p>
+</div>
+
+<div class="card strong-subject">
+    <h3>English</h3>
+    <p>Marks: {{ marks.english }}</p>
+    <p>Predicted: {{ marks.predicted_english }}</p>
+</div>
+
+<h3>Total: {{ marks.total }} / 300</h3>
+<h3>Grade: {{ marks.grade }}</h3>
+
+
+    <!-- Recommendations -->
+    <div class="recommendations">
+        <h3>Recommendations</h3>
+        <ul>
+            <li>Focus more on Science</li>
+            <li>Attend extra practice sessions</li>
+        </ul>
+    </div>
+
+</div>
+
+<div class="dashboard-card">
+        <h3>🏆 Activities</h3>
+        <ul id="activityList"></ul>
+    </div>
+
+    
+<!-- Chart -->
+    <div class="charts">
+        <h3>Marks vs Predicted</h3>
+        <canvas id="marksChart"></canvas>
+    </div>
+
+    <!-- Download Report Button -->
+    <a href="#" class="download-btn login-btn" onclick="downloadReport()">Download Report</a>
+
+
+
+
+<!-- JS -->
+<script>
+
+document.addEventListener('DOMContentLoaded', () => {
+    const attendanceElement = document.querySelector('.attendance-value');
+    const targetValue = parseInt(attendanceElement.innerText); // Takes the "90" from "90%"
+    let startValue = 0;
+    const duration = 2000; // 2 seconds
+    const counterInterval = 20; // Update every 20ms
+    const increment = targetValue / (duration / counterInterval);
+
+    const counter = setInterval(() => {
+        startValue += increment;
+        if (startValue >= targetValue) {
+            attendanceElement.innerText = targetValue + "%";
+            clearInterval(counter);
+        } else {
+            attendanceElement.innerText = Math.ceil(startValue) + "%";
+        }
+    }, counterInterval);
+});
+
+// Sidebar toggle
+const sidebar = document.getElementById('sidebar');
+const main = document.getElementById('main');
+const hamburger = document.getElementById('hamburger');
+
+hamburger.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+    main.classList.toggle('shifted');
+});
+
+// Animate predicted marks
+const animatedMarks = document.querySelectorAll('.animated-mark');
+animatedMarks.forEach(span => {
+    let target = parseInt(span.dataset.target);
+    let count = 0;
+    const interval = setInterval(() => {
+        if(count >= target){
+            clearInterval(interval);
+        } else {
+            count++;
+            span.textContent = count;
+        }
+    }, 30);
+});
+
+// Profile picture upload
+const uploadProfile = document.getElementById('uploadProfile');
+const profileImage = document.getElementById('profileImage');
+uploadProfile.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if(file){
+        profileImage.src = URL.createObjectURL(file);
+    }
+});
+
+// Chart.js - Smaller Neon Chart
+
+const marksChart = new Chart(document.getElementById('marksChart'), {
+    type: 'bar',
+    data: {
+        labels: ['Math', 'Science', 'English'],
+        datasets: [
+            {
+                label: 'Marks',
+                data: [
+                    {{ marks.maths|default:"0" }},
+                    {{ marks.science|default:"0" }},
+                    {{ marks.english|default:"0" }}
+                ],
+                backgroundColor: '#00fff0'
+            },
+            {
+                label: 'Predicted',
+                data: [
+                    {{ marks.predicted_maths|default:"0" }},
+                    {{ marks.predicted_science|default:"0" }},
+                    {{ marks.predicted_english|default:"0" }}
+                ],
+                backgroundColor: 'rgba(255,0,0,0.5)'
+            }
+        ]
+    }
+});
+
+
+let logoutTimer;
+let timeLeft = 15;
+
+// Open modal with blur + countdown
+function openLogoutModal() {
+    document.body.style.overflow = 'hidden';
+
+    document.getElementById('logoutModal').style.display = 'flex';
+    document.getElementById('main').classList.add('blur');
+    document.getElementById('sidebar').classList.add('blur');
+
+    timeLeft = 15;
+    document.getElementById('countdown').textContent = timeLeft;
+
+    logoutTimer = setInterval(() => {
+        timeLeft--;
+        document.getElementById('countdown').textContent = timeLeft;
+
+        if (timeLeft === 0) {
+            clearInterval(logoutTimer);
+            confirmLogout();
+        }
+    }, 1000);
+}
+
+// Cancel logout
+function cancelLogout() {
+    clearInterval(logoutTimer);
+    document.getElementById('logoutModal').style.display = 'none';
+    document.getElementById('main').classList.remove('blur');
+    document.getElementById('sidebar').classList.remove('blur');
+}
+document.body.style.overflow = 'auto';
+
+// Confirm logout
+
+function confirmLogout() {
+    clearInterval(logoutTimer);
+
+    // OPTIONAL: clear session/localStorage
+    localStorage.clear();
+    sessionStorage.clear();
+
+    // Smooth transition
+    document.body.style.opacity = "0";
+
+    // Redirect after animation
+    setTimeout(() => {
+        window.location.href = "login.html"; // your login page
+    }, 400);
+}
+function goToSubjects() {
+    window.location.href = "stu_sub.html";
+}
+</script>
+<script>
+async function downloadReport() {
+    const { jsPDF } = window.jspdf;
+    const dashboard = document.getElementById("main");
+
+    // Enable PDF mode
+    document.body.classList.add("pdf-mode");
+
+    await new Promise(resolve => setTimeout(resolve, 500)); // wait for reflow
+
+    const canvas = await html2canvas(dashboard, {
+        scale: 2,
+        scrollY: -window.scrollY,
+        useCORS: true
+    });
+
+    const imgData = canvas.toDataURL("image/png");
+
+    const pdf = new jsPDF("p", "mm", "a4");
+
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+    pdf.addImage(imgData, "PNG", 0, 10, pdfWidth, pdfHeight - 10);
+    pdf.save("Student_Report.pdf");
+
+    // Disable PDF mode
+    document.body.classList.remove("pdf-mode");
+}
+</script>
+
+<!-- Logout Confirmation Modal -->
+<div class="logout-modal" id="logoutModal">
+    <div class="logout-modal-box">
+        <h2>⚠️ Confirm Logout</h2>
+        <p>You will be logged out in 
+            <span id="countdown">15</span> seconds
+        </p>
+
+        <div class="logout-actions">
+            <button class="confirm-btn" onclick="confirmLogout()">Logout Now</button>
+            <button class="cancel-btn" onclick="cancelLogout()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function loadActivities() {
+    const list = document.getElementById("activityList");
+    list.innerHTML = "";
+
+    let activities = JSON.parse(localStorage.getItem("activities")) || [];
+
+    activities.forEach((a, index) => {
+        const card = document.createElement("div");
+        card.className = "activity-card";
+
+        card.innerHTML = `
+            <div>
+                <strong>${a.type}</strong> - ${a.name}
+                <p style="font-size:13px;">${a.desc || ""}</p>
+            </div>
+            <button class="delete-btn" onclick="deleteActivity(${index})">Delete ==> ❌</button>
+        `;
+
+        list.appendChild(card);
+    });
+}
+
+function deleteActivity(index) {
+    let activities = JSON.parse(localStorage.getItem("activities")) || [];
+    activities.splice(index, 1);
+    localStorage.setItem("activities", JSON.stringify(activities));
+    loadActivities();
+}
+
+loadActivities();
+</script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+</body>
+</html>

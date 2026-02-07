@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+     {% load static %}
+     
+<head>
+    <meta charset="UTF-8">
+    <title>Teacher Dashboard | AI Student Analyzer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'teacher_dash.css' %}">
+</head>
+<body>
+
+    <div class="bg-animation">
+        <div class="blob"></div>
+        <div class="blob"></div>
+        <div class="blob"></div>
+    </div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-toggle" id="toggleBtn">☰</div>
+        <div class="profile">
+            <img src="https://via.placeholder.com/100" alt="Profile">
+            <h4>Ms. Teacher</h4>
+        </div>
+        <ul>
+           <a href="{% url 'new_stu' %}">
+    <li>📊 <span>Add New Student</span></li>
+</a>
+
+<a href="{% url 'students' %}">
+    <li>👨‍🎓 <span>All Students</span></li>
+</a>
+
+
+<li>🧠 <span>AI Analysis</span></li>
+
+<a href="{% url 'attendance' %}">
+    <li>📊 <span>Attendance</span></li>
+</a>
+
+<a href="{% url 'marks' %}">
+    <li>📄 <span>Fill Marks</span></li>
+</a>
+
+<a href="{% url 'view_marks' %}">
+    <li>👁️ <span>View Marks</span></li>
+</a>
+        </ul>
+        <div class="logout-section">
+            <button class="logout-btn" onclick="openLogoutModal()">Logout</button>
+        </div>
+    </div>
+
+    <div class="main-container" id="mainContent">
+        <div class="topbar">
+            <input type="text" placeholder="🔍 Search student">
+            <span class="bell">🔔</span>
+        </div>
+
+        <div class="cards">
+            <div class="card glow"><h4>Total Students</h4><h2>120</h2></div>
+            <div class="card glow"><h4>Avg Performance</h4><h2>78%</h2></div>
+            <div class="card danger"><h4>At-Risk Students</h4><h2>8</h2></div>
+        </div>
+
+        <div class="ai-panel">
+            🤖 <b>AI Insight:</b> Math scores dropping for 6 students. Suggested action: Conduct remedial classes.
+        </div>
+
+        <div class="column-card activity-section">
+            <h4>📌 Student Activities</h4>
+            <div id="teacherActivityList">
+                
+            </div>
+        </div>
+    </div>
+
+    <div class="logout-modal" id="logoutModal">
+        <div class="logout-modal-box">
+            <h2>⚠️ Confirm Logout</h2>
+            <p>You will be logged out in 
+                <span id="countdown">15</span> seconds
+            </p>
+            <div class="logout-actions">
+                <button class="confirm-btn" onclick="confirmLogout()">Logout Now</button>
+                <button class="cancel-btn" onclick="cancelLogout()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sidebar Toggle Logic
+        const sidebar = document.getElementById("sidebar");
+        const mainContent = document.getElementById("mainContent");
+        const toggleBtn = document.getElementById("toggleBtn");
+
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+            mainContent.classList.toggle('shift');
+        });
+
+        // Activity Rendering Logic
+        const teacherActivityList = document.getElementById("teacherActivityList");
+        let studentActivities = JSON.parse(localStorage.getItem("activities")) || [];
+
+        function renderActivities() {
+            if (studentActivities.length === 0) {
+                teacherActivityList.innerHTML = "<p style='opacity:0.5; padding:20px;'>No recent activities recorded.</p>";
+                return;
+            }
+            teacherActivityList.innerHTML = "";
+            studentActivities.forEach((a, index) => {
+                teacherActivityList.innerHTML += `
+                    <div class="activity-card">
+                        <strong>${a.studentName || 'Unknown Student'}</strong> ${a.std ? `(${a.std})` : ''}<br>
+                        <span style="color: #00fff0;">${a.type || 'Activity'}: ${a.grade || a.total || ''}</span><br>
+                        <p style="margin-top:5px; font-size:0.9em; color:#bbb;">${a.timestamp || ''}</p>
+                        <div style="margin-top:10px; display:flex; gap:10px;">
+                            <button onclick="alert('Remark added')" class="remark-btn">Add Remark</button>
+                        </div>
+                    </div>`;
+            });
+        }
+        renderActivities();
+
+        // LOGOUT LOGIC (Matching Student Dashboard)
+        let logoutTimer;
+        let timeLeft = 15;
+
+        function openLogoutModal() {
+            document.body.style.overflow = 'hidden';
+            document.getElementById('logoutModal').style.display = 'flex';
+            document.getElementById('mainContent').classList.add('blur');
+            document.getElementById('sidebar').classList.add('blur');
+
+            timeLeft = 15;
+            document.getElementById('countdown').textContent = timeLeft;
+
+            logoutTimer = setInterval(() => {
+                timeLeft--;
+                document.getElementById('countdown').textContent = timeLeft;
+                if (timeLeft === 0) {
+                    clearInterval(logoutTimer);
+                    confirmLogout();
+                }
+            }, 1000);
+        }
+
+        function cancelLogout() {
+            clearInterval(logoutTimer);
+            document.getElementById('logoutModal').style.display = 'none';
+            document.getElementById('mainContent').classList.remove('blur');
+            document.getElementById('sidebar').classList.remove('blur');
+            document.body.style.overflow = 'auto';
+        }
+
+        function confirmLogout() {
+            clearInterval(logoutTimer);
+            localStorage.removeItem("currentUser"); // Example: clear specific session
+            document.body.style.opacity = "0";
+            document.body.style.transition = "opacity 0.4s";
+            setTimeout(() => {
+                window.location.href = "login.html"; 
+            }, 400);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+     {% load static %}
+<head>
+    <meta charset="UTF-8">
+    <title>AI Student Analyzer | Pro Attendance</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="{% static 'attendance.css' %}">
+</head>
+<body>
+
+    <div class="bg-animation">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+
+    <div class="attendance-container">
+        <header class="table-header">
+            <div class="header-left">
+                <h1>📊 Attendance Sheet</h1>
+                <p id="currentDate"></p>
+            </div>
+            <div class="stats">
+                <div class="stat-item">P: <span id="totalPresent">0</span></div>
+                <div class="stat-item">A: <span id="totalAbsent">0</span></div>
+                <div class="stat-item highlight">Class Avg: <span id="classPercentage">0%</span></div>
+            </div>
+        </header>
+
+        <div class="toolbar">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="Search name, roll, or ENR..." oninput="renderTable()">
+            </div>
+            
+            <select id="stdFilter" onchange="renderTable()">
+                <option value="10">Grade 10</option>
+                <option value="11">Grade 11</option>
+                <option value="12">Grade 12</option>
+            </select>
+            
+            <button class="export-btn" onclick="exportToExcel()">📥 Export Excel</button>
+        </div>
+
+        <div class="table-wrapper">
+            <table class="attn-table">
+                <thead>
+                    <tr>
+                        <th onclick="toggleSort()">Roll No <span id="sortIcon">⇅</span></th>
+                        <th>Enrollment No</th>
+                        <th>Student Name</th>
+                        <th style="text-align: center;">Status (Tap Row)</th>
+                        <th style="text-align: center;">Attd %</th>
+                    </tr>
+                </thead>
+                <tbody id="attendanceBody">
+                    </tbody>
+            </table>
+        </div>
+
+        <div class="bottom-bar">
+            <button class="save-btn" onclick="saveToSheet()">💾 Save Attendance Data</button>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('currentDate').innerText = new Date().toDateString();
+        
+        // Load data and deduplicate
+        let students = JSON.parse(localStorage.getItem("activities")) || [];
+        let uniqueStudents = Array.from(new Map(students.map(item => [item['enrollmentNo'], item])).values());
+        let sortAsc = true;
+
+        // Initialize status and dummy history for percentage calculation
+        uniqueStudents.forEach(s => { 
+            if(!s.status) s.status = 'Present';
+            if(!s.attendedDays) s.attendedDays = Math.floor(Math.random() * 10) + 35; // Dummy: 35-45 days attended
+            s.totalDays = 50; // Total days in semester so far
+        });
+
+        function renderTable() {
+            const body = document.getElementById('attendanceBody');
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const filter = document.getElementById('stdFilter').value;
+            body.innerHTML = "";
+
+            let filtered = uniqueStudents.filter(s => {
+                const matchesSearch = s.studentName.toLowerCase().includes(search) || 
+                                    s.enrollmentNo.toLowerCase().includes(search) ||
+                                    (s.rollNo && s.rollNo.toString().includes(search));
+                const matchesGrade = s.std === filter;
+                return matchesSearch && matchesGrade;
+            });
+
+            filtered.forEach(s => {
+                const isPresent = s.status === 'Present';
+                // Calculate current live percentage
+                const currentPct = Math.round(((s.attendedDays + (isPresent ? 1 : 0)) / (s.totalDays + 1)) * 100);
+                
+                const row = document.createElement('tr');
+                row.className = isPresent ? 'row-present' : 'row-absent';
+                row.onclick = () => toggleRowStatus(s, row);
+                
+                row.innerHTML = `
+                    <td class="roll-col">${s.rollNo || '—'}</td>
+                    <td><code class="enr-code">${s.enrollmentNo}</code></td>
+                    <td><strong>${s.studentName}</strong></td>
+                    <td style="text-align: center;">
+                        <span class="status-badge">${s.status}</span>
+                    </td>
+                    <td style="text-align: center;">
+                        <span class="pct-val ${currentPct < 75 ? 'low' : ''}">${currentPct}%</span>
+                    </td>
+                `;
+                body.appendChild(row);
+            });
+            updateHeaderStats(filter);
+        }
+
+        function toggleRowStatus(student, rowElement) {
+            student.status = (student.status === 'Present') ? 'Absent' : 'Present';
+            renderTable(); // Re-render to update percentages instantly
+        }
+
+        function toggleSort() {
+            sortAsc = !sortAsc;
+            uniqueStudents.sort((a, b) => {
+                const rA = parseInt(a.rollNo) || 0;
+                const rB = parseInt(b.rollNo) || 0;
+                return sortAsc ? (rA - rB) : (rB - rA);
+            });
+            document.getElementById('sortIcon').innerText = sortAsc ? '▲' : '▼';
+            renderTable();
+        }
+
+        function updateHeaderStats(filter) {
+            const currentList = uniqueStudents.filter(s => s.std === filter);
+            const total = currentList.length;
+            const present = currentList.filter(s => s.status === 'Present').length;
+            const classAvg = total > 0 ? Math.round((present / total) * 100) : 0;
+
+            document.getElementById('totalPresent').innerText = present;
+            document.getElementById('totalAbsent').innerText = total - present;
+            document.getElementById('classPercentage').innerText = classAvg + "%";
+        }
+
+        function exportToExcel() {
+            const filter = document.getElementById('stdFilter').value;
+            const data = uniqueStudents.filter(s => s.std === filter).map(s => ({
+                "Roll No": s.rollNo,
+                "Name": s.studentName,
+                "Status": s.status,
+                "Attd %": Math.round(((s.attendedDays + (s.status === 'Present' ? 1 : 0)) / (s.totalDays + 1)) * 100) + "%"
+            }));
+            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, ws, "Attendance");
+            XLSX.writeFile(wb, `Attendance_Grade_${filter}.xlsx`);
+        }
+
+        function saveToSheet() {
+            localStorage.setItem("final_attendance", JSON.stringify(uniqueStudents));
+            alert("Attendance and Percentages Saved!");
+        }
+
+        renderTable();
+    </script>
+</body>
+</html>
