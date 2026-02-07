@@ -21,3 +21,18 @@ The **AI-Based Student Performance Analyzer** is a smart system that evaluates a
 1. Clone the repository:
    ```bash
    git clone https://github.com/username/Ai-Student-Performance-Analyzer.git
+
+
+
+  <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/ff243c3a-5083-4226-a978-64a3b89b1de5" />
+
+
+  <img width="1919" height="910" alt="image" src="https://github.com/user-attachments/assets/75cd70c0-517e-47a9-b4b3-9ddab851d4a3" />
+  <img width="1916" height="905" alt="image" src="https://github.com/user-attachments/assets/b982f639-e8b3-44dc-8089-04c1d264f83d" />
+
+
+  <img width="1919" height="909" alt="image" src="https://github.com/user-attachments/assets/c44b52fc-6c64-46e0-a4c7-34e72ecfdae9" />
+
+
+
+
